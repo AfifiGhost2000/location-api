@@ -1,6 +1,23 @@
 const express = require('express');
 const cors = require('cors');
 const rateLimit = require('express-rate-limit');
+const http = require('http');
+const fs = require('fs');
+const https = require('https');
+
+const options = {
+  key: fs.readFileSync('server.key'),
+  cert: fs.readFileSync('server.cert')
+};
+
+https.createServer(options, app).listen(443, () => {
+  console.log('HTTPS Server running on port 443');
+});
+
+http.createServer((req, res) => {
+  res.writeHead(301, { "Location": "https://" + req.headers['host'] + req.url });
+  res.end();
+}).listen(80);
 
 const app = express();
 app.use(cors());
@@ -52,5 +69,10 @@ app.get('/location', (req, res) => {
   res.json(latestLocation);
 });
 
+
+
+
+
+
 const PORT = 3000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+app.listen(PORT, '0.0.0.0', () => console.log(`Server running on port ${PORT}`));
