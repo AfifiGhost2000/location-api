@@ -5,6 +5,11 @@ const http = require('http');
 const fs = require('fs');
 const https = require('https');
 
+const app = express();
+app.use(cors());
+app.use(express.json());
+
+
 const options = {
   key: fs.readFileSync('server.key'),
   cert: fs.readFileSync('server.cert')
@@ -19,9 +24,6 @@ http.createServer((req, res) => {
   res.end();
 }).listen(80);
 
-const app = express();
-app.use(cors());
-app.use(express.json());
 
 // Security: Rate Limiting
 const limiter = rateLimit({
